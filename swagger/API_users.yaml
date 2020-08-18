@@ -1,0 +1,212 @@
+openapi: 3.0.3
+info:
+  description: ""
+  version: 1.0.0
+  title: API Design
+servers: 
+  - url: http://localhost:10
+tags:
+  - name: users
+    description: User information API
+paths:
+  /user/login:
+    post:
+      tags: 
+        - users
+      summary: login
+      description: login
+      operationId: loginUser
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/userLogin"
+        description: email & password
+        required: true
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    type: object
+                    properties:
+                      token:
+                        type: string
+  /users:
+    get:
+      security: 
+        - bearerAuth: []
+      tags: 
+        - users
+      summary: Get all users
+      description: Get all users
+      operationId: getUsers
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  matchcount:
+                    type: integer
+                    description: the number of results returned
+                  result:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/userInfo"
+    post:
+      security: 
+        - bearerAuth: []
+      tags: 
+        - users
+      summary: register
+      description: register - insert user by user Id
+      operationId: insertUserById
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/userUpdate"
+        description: user infomation for register
+        required: true
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    description: user Id
+  /users/{userId}:
+    get:
+      security: 
+        - bearerAuth: []
+      tags: 
+        - users
+      summary: Get user by user id
+      description: Get user by user id
+      operationId: getUserByUserId
+      parameters: 
+        - name: userId
+          in: path
+          description: user Id
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    $ref: "#/components/schemas/userInfo"
+    put:
+      security: 
+        - bearerAuth: []
+      tags: 
+        - users
+      summary: update user by user Id
+      description: update user by user Id
+      operationId: updateUserByUserId
+      parameters: 
+        - name: userId
+          in: path
+          description: user Id
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/userUpdate"
+        description: user information
+        required: true
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    type: string
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    userInfo:
+      type: object
+      properties:
+        userId:
+          type: integer
+          description: user id
+        fullName:
+          type: string
+          description: user fullname
+        password:
+          type: string
+          description: password
+        dateOfBirth:
+          type: string
+          format: date-time
+          description: birth day
+        mail:
+          type: string
+          format: email
+          description: email
+        status:
+          type: boolean
+          description: user status
+        avatar:
+          type: string
+          description: avatar
+    userLogin:
+      type: object
+      properties:
+        mail:
+          type: string
+          format: email
+          description: email
+        password:
+          type: string
+          description: password
+    userUpdate:
+      type: object
+      properties:
+        fullName:
+          type: string
+          description: user fullname
+        password:
+          type: string
+          description: password
+        dateOfBirth:
+          type: string
+          format: date-time
+          description: birth day
+        mail:
+          type: string
+          format: email
+          description: email
+        status:
+          type: boolean
+          description: user status
+        avatar:
+          type: string
+          description: avatar
