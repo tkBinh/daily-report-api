@@ -1,0 +1,153 @@
+openapi: 3.0.3
+info:
+  description: ""
+  version: 1.0.0
+  title: API Design
+servers: 
+  - url: http://localhost:10
+tags:
+  - name: tasks
+    description: Tasks API
+paths:
+  /tasks:
+    get:
+      tags: 
+        - tasks
+      summary: Get all task
+      description: Get all task
+      operationId: getTasks
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  matchcount:
+                    type: integer
+                    description: the number of results returned
+                  result:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/task"
+    post:
+      tags: 
+        - tasks
+      summary: Create a task
+      description: Create a task
+      operationId: insertTask
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/taskCreate"
+        description: task infomation
+        required: true
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    description: task Id
+  /tasks/{taskId}:
+    get:
+      tags: 
+        - tasks
+      summary: Get task by id
+      description: Get task by id
+      operationId: getTaskById
+      parameters: 
+        - name: taskId
+          in: path
+          description: task Id
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    $ref: "#/components/schemas/task"
+    put:
+      tags: 
+        - tasks
+      summary: Update task
+      description: Update task
+      operationId: updateTask
+      parameters: 
+        - name: taskId
+          in: path
+          description: task Id
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/taskUpdate"
+        description: task information
+        required: true
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    type: string
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    task:
+      type: object
+      properties:
+        id:
+          type: integer
+        title: 
+          type: string
+        content:
+          type: string
+        status:
+          type: integer
+        createAt: 
+          type: string
+        updateAt:
+          type: string
+    taskCreate:
+      type: object
+      properties:
+        title: 
+          type: string
+        content:
+          type: string
+        status:
+          type: integer
+    taskUpdate:
+      type: object
+      properties:
+        title: 
+          type: string
+        content:
+          type: string
+        status:
+          type: integer
+        updateAt:
+          type: string
